@@ -54,9 +54,11 @@ OBJECTS_DIR   = ./
 
 SOURCES       = javahandler.cpp \
 		main.cpp \
+		matchhandler.cpp \
 		paramhandler.cpp 
 OBJECTS       = javahandler.o \
 		main.o \
+		matchhandler.o \
 		paramhandler.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
@@ -143,8 +145,10 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		NistFingerMatcher.pro javahandler.h \
+		matchhandler.h \
 		paramhandler.h javahandler.cpp \
 		main.cpp \
+		matchhandler.cpp \
 		paramhandler.cpp
 QMAKE_TARGET  = NistFingerMatcher
 DESTDIR       = 
@@ -343,8 +347,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents javahandler.h paramhandler.h $(DISTDIR)/
-	$(COPY_FILE) --parents javahandler.cpp main.cpp paramhandler.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents javahandler.h matchhandler.h paramhandler.h $(DISTDIR)/
+	$(COPY_FILE) --parents javahandler.cpp main.cpp matchhandler.cpp paramhandler.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -402,6 +406,12 @@ main.o: main.cpp /usr/lib/jvm/default-java/include/jni.h \
 		javahandler.h \
 		paramhandler.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
+
+matchhandler.o: matchhandler.cpp matchhandler.h \
+		javahandler.h \
+		/usr/lib/jvm/default-java/include/jni.h \
+		/usr/lib/jvm/default-java/include/linux/jni_md.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o matchhandler.o matchhandler.cpp
 
 paramhandler.o: paramhandler.cpp paramhandler.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o paramhandler.o paramhandler.cpp

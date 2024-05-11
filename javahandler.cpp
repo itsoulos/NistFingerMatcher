@@ -1,5 +1,6 @@
 #include "javahandler.h"
 
+
 JavaHandler::JavaHandler(QString nameOfJar,QString nameOfMethod)
 {
     QString  pwd_path=QCoreApplication::applicationDirPath() ;
@@ -39,7 +40,7 @@ double JavaHandler::callAfis(QString path1,QString path2)
 {
    jstring jstr1 = env->NewStringUTF(path1.toStdString().c_str());
    jstring jstr2 = env->NewStringUTF(path2.toStdString().c_str());
-   jdouble value=env->CallStaticDoubleMethod(cls2,mid2,jstr1,jstr2);;
+   jdouble value=env->CallStaticDoubleMethod(cls2,mid2,jstr1,jstr2);
    return value;
 }
 

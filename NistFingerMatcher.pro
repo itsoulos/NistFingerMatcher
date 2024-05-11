@@ -15,6 +15,7 @@ linux: {
 SOURCES += \
         javahandler.cpp \
         main.cpp \
+        matchhandler.cpp \
         paramhandler.cpp
 
 # Default rules for deployment.
@@ -26,4 +27,5 @@ RESOURCES +=
 
 HEADERS += \
     javahandler.h \
+    matchhandler.h \
     paramhandler.h

@@ -4,7 +4,28 @@
 # include <string.h>
 # include "javahandler.h"
 # include "paramhandler.h"
+# include "matchhandler.h"
 # include <QDir>
+
+ParamHandler phandler;
+JavaHandler *jhandler=NULL;
+MatchHandler *mhandler;
+
+void onFreeMemory()
+{
+    if(jhandler!=NULL)
+        delete jhandler;
+    if(mhandler!=NULL)
+        delete mhandler;
+}
+void onError(QString message)
+{
+    qDebug().noquote()<<QString("Fatal Error: %1").arg(message,40);
+    onFreeMemory();
+    qApp->exit(EXIT_FAILURE);
+    exit(EXIT_FAILURE);
+}
+
 void addParams(ParamHandler &phandler)
 {
     phandler.addParam("jarfile","FingerAfis.jar","Name of the Source Afis jar file.");
@@ -17,19 +38,22 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    ParamHandler phandler;
+
     addParams(phandler);
     phandler.parseCmdLine(a.arguments());
 
-    QDir dir1(phandler.getParamValue("sourcedir1"));
-    QStringList images1 = dir1.entryList(QStringList() << "*.png" << "*.PNG",QDir::Files);
-    qDebug()<<images1;
-   /* JavaHandler *jhandler=new JavaHandler(phandler.getParamValue("jarfile"),
+
+    jhandler=new JavaHandler(phandler.getParamValue("jarfile"),
                                           phandler.getParamValue("methodname"));
-    QString a1 = argv[1];
-    QString a2 = argv[2];
-    double testValue = jhandler->callAfis(a1,a2);
-    qDebug()<<"TestValue: "<<testValue;
-    delete jhandler;*/
-    exit(EXIT_SUCCESS);
+
+    mhandler = new MatchHandler(
+                phandler.getParamValue("sourcedir1"),
+                phandler.getParamValue("sourcedir2"),
+                phandler.getParamValue("fingerindex"),
+                jhandler
+                );
+    QVector<MatchStruct> matches;
+    mhandler->runMatcher(matches);
+    onFreeMemory();
+    return 0;
 }
