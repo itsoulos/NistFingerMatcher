@@ -43,7 +43,10 @@ double JavaHandler::callAfis(QString path1,QString path2)
    jdouble value=env->CallStaticDoubleMethod(cls2,mid2,jstr1,jstr2);
    return value;
 }
-
+void JavaHandler::attachThread()
+{
+    jvm->AttachCurrentThread((void **)&env,&vm_args);
+}
 JavaHandler::~JavaHandler()
 {
   jvm->DestroyJavaVM();

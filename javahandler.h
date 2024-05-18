@@ -20,6 +20,7 @@ private:
 public:
     JavaHandler(QString nameOfJar,QString nameOfMethod);
     double callAfis(QString path1,QString path2);
+    void attachThread();
     ~JavaHandler();
 };
 

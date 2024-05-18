@@ -1,10 +1,14 @@
 #include "matchhandler.h"
 extern void onError(QString message);
+#include <jni.h>
 
-MatchHandler::MatchHandler(QString s1,QString s2,QString finger,JavaHandler *hnd)
+MatchHandler::MatchHandler(QString s1,QString s2,
+                           QString finger,
+                           JavaHandler *hnd,int t)
 {
     sourcedir1 = s1;
     sourcedir2 = s2;
+    threads = t;
     fingerindex=finger;
     jhandler = hnd;
     QDir dir1(sourcedir1);
@@ -34,8 +38,14 @@ MatchHandler::MatchHandler(QString s1,QString s2,QString finger,JavaHandler *hnd
 
 void    MatchHandler::runMatcher(QVector<MatchStruct> &matches)
 {
-    for(const QString &n1 : images1)
+ //  omp_set_num_threads(threads);
+    int i;
+//#pragma omp parallel for private(i) num_threads(threads)
+
+    for( i=0;i<images1.size();i++)
     {
+  //  jhandler->attachThread();
+        QString n1 = images1[i];
     QString name1 = sourcedir1+n1;
     double bestMatch = -1e+100;
     QString bestMatchedName = "";
@@ -56,7 +66,7 @@ void    MatchHandler::runMatcher(QVector<MatchStruct> &matches)
     mt.user2 = bestMatchedName.split("_")[0];
     mt.match = bestMatch;
     matches<<mt;
-    qDebug()<<"Best matched for  "<<mt.user1<<"..is "<<
+    qDebug()<<" Best matched for  "<<mt.user1<<"..is "<<
               mt.user2<<" With value "<<bestMatch;
     }
 }

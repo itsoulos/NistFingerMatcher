@@ -33,6 +33,8 @@ void addParams(ParamHandler &phandler)
     phandler.addParam("fingerindex","01","Finger index: 01-10");
     phandler.addParam("sourcedir1",".","The first source dir of png images");
     phandler.addParam("sourcedir2",".","The second source directory of images");
+    phandler.addParam("matchLimit","40.0","The match limit for sourceafirs");
+    phandler.addParam("threads","1","Number of OpenMp threads");
 }
 int main(int argc, char *argv[])
 {
@@ -50,10 +52,20 @@ int main(int argc, char *argv[])
                 phandler.getParamValue("sourcedir1"),
                 phandler.getParamValue("sourcedir2"),
                 phandler.getParamValue("fingerindex"),
-                jhandler
+                jhandler,phandler.getParamValue("threads").toInt()
                 );
     QVector<MatchStruct> matches;
     mhandler->runMatcher(matches);
+    double score = 0.0;
+    const double matchLimit = phandler.getParamValue("matchLimit").toDouble();
+    for(int i=0;i<matches.size();i++)
+    {
+        if(matches[i].user1==matches[i].user2
+                && matches[i].match>=matchLimit)
+            score = score+1.0;
+    }
+    score = score *100.0/matches.size();
+    printf("SCORE : %.2lf%%\n",score);
     onFreeMemory();
     return 0;
 }
